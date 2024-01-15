@@ -1,7 +1,6 @@
-import time
-
 import pygame
 import cv2
+import subprocess
 import numpy as np
 from database import Database
 from sound_manager import SoundManager
@@ -18,6 +17,7 @@ class TicTacToeGame:
         self.PLAYER_VS_PLAYER = 1
         self.PLAYER_VS_COMPUTER = 2
         self.current_state = self.START_SCREEN
+        self.game_over = False
 
         self.game_title_img = pygame.image.load("data/game_title.png").convert_alpha()
         self.game_title_img = pygame.transform.scale(self.game_title_img, (500, 100))
@@ -180,9 +180,13 @@ class TicTacToeGame:
                 elif event.type == pygame.MOUSEBUTTONDOWN and self.current_state == self.START_SCREEN:
                     if self.pvp_button_img.get_rect(center=(self.WIDTH // 3, self.HEIGHT // 2)).collidepoint(event.pos):
                         self.current_state = self.PLAYER_VS_PLAYER
+                        self.game_over = False
                     elif self.pvc_button_img.get_rect(center=(2 * self.WIDTH // 3, self.HEIGHT // 2)).collidepoint(
                             event.pos):
                         self.current_state = self.PLAYER_VS_COMPUTER
+                        self.game_over = False
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    self.game_over = False
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and self.current_state in (
                         self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
@@ -215,13 +219,16 @@ class TicTacToeGame:
                         winner_img = pygame.image.load("data/player_1_win.png").convert_alpha()
                         pygame.mixer.music.stop()
                         self.sound_manager.play_win_sound()
+                        self.database.update_stats('PVP', player_1_wins=1)
                     elif winner == 'O':
                         if self.current_state == self.PLAYER_VS_PLAYER:
                             winner_img = pygame.image.load("data/player_2_win.png").convert_alpha()
+                            self.database.update_stats('PVP', player_2_wins=1)
                             pygame.mixer.music.stop()
                             self.sound_manager.play_win_sound()
                         else:
                             winner_img = pygame.image.load("data/pvc_player_win.png").convert_alpha()
+                            self.database.update_stats('PVC', computer_wins=1)
                             pygame.mixer.music.stop()
                             self.sound_manager.play_lose_sound()
 
@@ -242,6 +249,8 @@ class TicTacToeGame:
                 self.sound_manager.stop_lose_sound()
                 self.sound_manager.stop_win_sound()
                 winner_img = None
+                subprocess.call('python main.py', shell=True)
+                pygame.quit()
 
             self.draw_start_screen()
             if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
