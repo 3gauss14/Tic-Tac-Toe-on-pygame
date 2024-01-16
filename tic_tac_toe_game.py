@@ -1,6 +1,7 @@
 import pygame
 import cv2
 import subprocess
+from time import sleep
 import numpy as np
 from database import Database
 from sound_manager import SoundManager
@@ -20,21 +21,14 @@ class TicTacToeGame:
         self.game_over = False
 
         self.game_title_img = pygame.image.load("data/game_title.png").convert_alpha()
-        self.game_title_img = pygame.transform.scale(self.game_title_img, (500, 100))
 
         self.pvp_button_img = pygame.image.load("data/pvp_image.png").convert_alpha()
-        self.pvp_button_img = pygame.transform.scale(self.pvp_button_img, (200, 75))
 
         self.pvc_button_img = pygame.image.load("data/pvc_image.png").convert_alpha()
-        self.pvc_button_img = pygame.transform.scale(self.pvc_button_img, (200, 75))
 
         self.X_img = pygame.image.load("data/X.png").convert_alpha()
-        self.X_img = pygame.transform.scale(self.X_img, (250, 250))
 
         self.O_img = pygame.image.load("data/O.png").convert_alpha()
-        self.O_img = pygame.transform.scale(self.O_img, (250, 250))
-
-        self.board = [['-' for _ in range(3)] for _ in range(3)]
 
         self.player_turn = True
 
@@ -57,6 +51,7 @@ class TicTacToeGame:
             self.screen.blit(self.pvc_button_img, pvc_button_rect)
         elif self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
             self.draw_neon_grid()
+
 
     def draw_neon_grid(self):
         cell_size = self.WIDTH // 3
@@ -206,12 +201,14 @@ class TicTacToeGame:
                             computer_row, computer_col = self.computer_move(board)
                             board[computer_row][computer_col] = 'O'
                             self.player_turn = True
-            self.draw_start_screen()
-            if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
-                for row in range(3):
-                    for col in range(3):
-                        if board[row][col] != '-':
-                            self.draw_symbol(board[row][col], row, col)
+                self.draw_start_screen()
+                if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
+                    for row in range(3):
+                        for col in range(3):
+                            if board[row][col] != '-':
+                                self.draw_symbol(board[row][col], row, col)
+                else:
+                    board = [['-' for _ in range(3)] for _ in range(3)]
 
                 winner = self.check_winner(board)
                 if winner is not None:
@@ -249,15 +246,14 @@ class TicTacToeGame:
                 self.sound_manager.stop_lose_sound()
                 self.sound_manager.stop_win_sound()
                 winner_img = None
-                subprocess.call('python main.py', shell=True)
-                pygame.quit()
-
             self.draw_start_screen()
             if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
                 for row in range(3):
                     for col in range(3):
                         if board[row][col] != '-':
                             self.draw_symbol(board[row][col], row, col)
+            else:
+                board = [['-' for _ in range(3)] for _ in range(3)]
 
                 winner = self.check_winner(board)
                 if winner is not None:
