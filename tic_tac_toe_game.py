@@ -201,14 +201,14 @@ class TicTacToeGame:
                             computer_row, computer_col = self.computer_move(board)
                             board[computer_row][computer_col] = 'O'
                             self.player_turn = True
-                self.draw_start_screen()
-                if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
-                    for row in range(3):
-                        for col in range(3):
-                            if board[row][col] != '-':
-                                self.draw_symbol(board[row][col], row, col)
-                else:
-                    board = [['-' for _ in range(3)] for _ in range(3)]
+                    self.draw_start_screen()
+                    if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
+                        for row in range(3):
+                            for col in range(3):
+                                if board[row][col] != '-':
+                                    self.draw_symbol(board[row][col], row, col)
+                    else:
+                        board = [['-' for _ in range(3)] for _ in range(3)]
 
                 winner = self.check_winner(board)
                 if winner is not None:
