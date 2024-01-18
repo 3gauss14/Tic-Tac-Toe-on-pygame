@@ -201,6 +201,8 @@ class TicTacToeGame:
                             computer_row, computer_col = self.computer_move(board)
                             board[computer_row][computer_col] = 'O'
                             self.player_turn = True
+                if self.current_state == self.START_SCREEN:
+                    self.player_turn = True
                 self.draw_start_screen()
                 if self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
                     for row in range(3):
