@@ -17,6 +17,7 @@ class TicTacToeGame:
         self.START_SCREEN = 0
         self.PLAYER_VS_PLAYER = 1
         self.PLAYER_VS_COMPUTER = 2
+        self.STATISTIC_SCREEN = 3
         self.current_state = self.START_SCREEN
         self.game_over = False
 
@@ -51,7 +52,36 @@ class TicTacToeGame:
             self.screen.blit(self.pvc_button_img, pvc_button_rect)
         elif self.current_state in (self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):
             self.draw_neon_grid()
+        elif self.current_state in self.STATISTIC_SCREEN:
+            self.draw_statistic()
 
+    def draw_statistic(self):
+        self.screen.fill(self.BLACK)
+        if self.current_state == self.STATISTIC_SCREEN:
+            space = 35
+
+            # Таблица с БД
+            fon = pygame.font.Font(None, 10)
+            title1 = fon.render(f'Type of game', True, 'white')
+            title2 = fon.render(f'P-r 1 victories', True, 'cyan')
+            title3 = fon.render(f'P-r 2 victories', True, 'red')
+            title4 = fon.render(f'C-r victories', True, 'lime')
+            self.screen.blit(title1, [self.WIDTH / 5, (self.HEIGHT / 4) + 5])
+            self.screen.blit(title2, [self.WIDTH / 5 + 200, (self.HEIGHT / 4) + 5])
+            self.screen.blit(title3, [self.WIDTH / 5 + 400, (self.HEIGHT / 4) + 5])
+            self.screen.blit(title4, [self.WIDTH / 5 + 600, (self.HEIGHT / 4) + 5])
+            src = (self.database.source()).fetchall()
+            for row in src:
+                print(self.database.source())
+                col1 = fon.render('{}'.format(row[1]), True, 'white')
+                col2 = fon.render('{}'.format(row[2]), True, 'cyan')
+                col3 = fon.render('{}'.format(row[3]), True, 'red')
+                col4 = fon.render('{}'.format(row[4]), True, 'lime')
+                self.screen.blit(col1, [self.WIDTH // 5, (self.HEIGHT // 4) + 5 + space])
+                self.screen.blit(col2, [self.WIDTH // 5 + 200, (self.HEIGHT // 4) + 5 + space])
+                self.screen.blit(col3, [self.WIDTH // 5 + 400, (self.HEIGHT // 4) + 5 + space])
+                self.screen.blit(col4, [self.WIDTH // 5 + 600, (self.HEIGHT // 4) + 5 + space])
+                space += 35
 
     def draw_neon_grid(self):
         cell_size = self.WIDTH // 3
@@ -180,8 +210,17 @@ class TicTacToeGame:
                             event.pos):
                         self.current_state = self.PLAYER_VS_COMPUTER
                         self.game_over = False
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.game_over = False
+
+                elif event.type == pygame.KEYDOWN:
+                    c = 0
+                    if event.key == pygame.K_ESCAPE:
+                        self.game_over = False
+                    elif event.key == pygame.K_s:
+                        c += 1
+                        if c == 1 and self.current_state == self.START_SCREEN:
+                            self.screen.fill(self.BLACK)
+                            self.draw_statistic()
+                            self.current_state = self.STATISTIC_SCREEN
 
                 elif event.type == pygame.MOUSEBUTTONDOWN and self.current_state in (
                         self.PLAYER_VS_PLAYER, self.PLAYER_VS_COMPUTER):

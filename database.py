@@ -1,10 +1,12 @@
 import sqlite3
 
+
 class Database:
     def __init__(self):
         self.connection = sqlite3.connect("data/stats.db")
         self.cursor = self.connection.cursor()
         self.create_table()
+        self.connection.commit()
 
     def create_table(self):
         self.cursor.execute("""
@@ -24,3 +26,9 @@ class Database:
             VALUES (?, ?, ?, ?)
         """, (game_type, player_1_wins, player_2_wins, computer_wins))
         self.connection.commit()
+
+    def source(self):
+        src = self.cursor.execute("""
+                SELECT * FROM stats LIMIT 10""")
+        self.connection.commit()
+        return src
