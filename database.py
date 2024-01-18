@@ -29,6 +29,6 @@ class Database:
 
     def source(self):
         src = self.cursor.execute("""
-                SELECT * FROM stats LIMIT 10""")
+                SELECT * FROM stats""")
         self.connection.commit()
         return src
