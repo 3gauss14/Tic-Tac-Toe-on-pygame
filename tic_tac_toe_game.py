@@ -61,26 +61,30 @@ class TicTacToeGame:
             space = 35
 
             # Таблица с БД
-            fon = pygame.font.Font(None, 30)
+            fon = pygame.font.Font(None, 35)
+            main_fon = pygame.font.SysFont('sans', 40)
+            maintitle = main_fon.render(f'Table of wins', True, 'white')
             title1 = fon.render(f'Type of game', True, 'white')
             title2 = fon.render(f'P-r 1 victories', True, 'cyan')
             title3 = fon.render(f'P-r 2 victories', True, 'red')
             title4 = fon.render(f'C-r victories', True, 'lime')
-            self.screen.blit(title1, [self.WIDTH / 20, (self.HEIGHT / 8) + 5])
-            self.screen.blit(title2, [self.WIDTH / 20 + 200, (self.HEIGHT / 8) + 5])
-            self.screen.blit(title3, [self.WIDTH / 20 + 400, (self.HEIGHT / 8) + 5])
-            self.screen.blit(title4, [self.WIDTH / 20 + 600, (self.HEIGHT / 8) + 5])
-            src = (self.database.source()).fetchall()
+            self.screen.blit(maintitle, [self.WIDTH /2.6, (self.HEIGHT / 19)])
+            self.screen.blit(title1, [self.WIDTH / 20, (self.HEIGHT / 9) + 5])
+            self.screen.blit(title2, [self.WIDTH / 20 + 200, (self.HEIGHT / 9) + 5])
+            self.screen.blit(title3, [self.WIDTH / 20 + 400, (self.HEIGHT / 9) + 5])
+            self.screen.blit(title4, [self.WIDTH / 20 + 600, (self.HEIGHT / 9) + 5])
+            src = (self.database.source()).fetchall()[::-1]
             for row in src:
-                col1 = fon.render('{:>3}'.format(row[1]), True, 'white')
-                col2 = fon.render('{:>3}'.format(row[2]), True, 'cyan')
-                col3 = fon.render('{:>3}'.format(row[3]), True, 'red')
-                col4 = fon.render('{:>3}'.format(row[4]), True, 'lime')
-                self.screen.blit(col1, [self.WIDTH // 20, (self.HEIGHT // 4) + 5 + space])
-                self.screen.blit(col2, [self.WIDTH // 20 + 200, (self.HEIGHT // 4) + 5 + space])
-                self.screen.blit(col3, [self.WIDTH // 20 + 400, (self.HEIGHT // 4) + 5 + space])
-                self.screen.blit(col4, [self.WIDTH // 20 + 600, (self.HEIGHT // 4) + 5 + space])
-                space += 35
+                if row:
+                    col1 = fon.render('{}'.format(row[1]), True, 'white')
+                    col2 = fon.render('{}'.format(row[2]), True, 'cyan')
+                    col3 = fon.render('{}'.format(row[3]), True, 'red')
+                    col4 = fon.render('{}'.format(row[4]), True, 'lime')
+                    self.screen.blit(col1, [self.WIDTH // 20, (self.HEIGHT // 9) + 5 + space])
+                    self.screen.blit(col2, [self.WIDTH // 20 + 200, (self.HEIGHT // 9) + 5 + space])
+                    self.screen.blit(col3, [self.WIDTH // 20 + 400, (self.HEIGHT // 9) + 5 + space])
+                    self.screen.blit(col4, [self.WIDTH // 20 + 600, (self.HEIGHT // 9) + 5 + space])
+                    space += 35
 
     def draw_neon_grid(self):
         cell_size = self.WIDTH // 3
